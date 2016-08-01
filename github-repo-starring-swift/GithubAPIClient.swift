@@ -11,7 +11,7 @@ import UIKit
 class GithubAPIClient {
     
     class func getRepositoriesWithCompletion(completion: (NSArray) -> ()) {
-        let urlString = "\(githubAPIURL)/repositories?client_id=\(githubClientID)&client_secret=\(githubClientSecret)"
+        let urlString = "\(Secrets.githubAPIURL)/repositories?client_id=\(Secrets.githubClientID)&client_secret=\(Secrets.githubClientSecret)"
         let url = NSURL(string: urlString)
         let session = NSURLSession.sharedSession()
         
@@ -27,6 +27,91 @@ class GithubAPIClient {
         }
         task.resume()
     }
+    
+    func checkIfRepositoryIsStarred(fullName: String, completion: (Bool) ->()) {
+        let urlString = "\(Secrets.githubAPIURL)/user/starred/\(fullName)?access_token=\(Secrets.token)"
+        let url = NSURL(string: urlString)
+        let session = NSURLSession.sharedSession()
+        
+        guard let unwrappedURL = url else { fatalError("Invalid URL") }
+        let githubRequest = NSMutableURLRequest(URL: unwrappedURL)
+        
+        let task = session.dataTaskWithRequest(githubRequest) { (data, response, error) in
+            githubRequest.addValue("token \(Secrets.token)", forHTTPHeaderField: "Authorization")
+            githubRequest.HTTPMethod = "GET"
+            
+            if let data = data {githubRequest.HTTPBody = NSData(data: data)}
+            
+            let httpResponse = response as! NSHTTPURLResponse
+            if httpResponse.statusCode == 204 {
+                completion()
+            } else {
+                print(error)
+            }
+
+            
+        }
+        
+        task.resume()
+        
+    }
+    
+    
+    func starRepository(fullName: String, completion:()->()){
+        let urlString = "\(Secrets.githubAPIURL)/user/starred/\(fullName)?access_token=\(Secrets.token)"
+        let url = NSURL(string: urlString)
+        let session = NSURLSession.sharedSession()
+        
+        guard let unwrappedURL = url else { fatalError("Invalid URL") }
+        let githubRequest = NSMutableURLRequest(URL: unwrappedURL)
+        
+        let task = session.dataTaskWithRequest(githubRequest) { (data, response, error) in
+            githubRequest.addValue("token \(Secrets.token)", forHTTPHeaderField: "Authorization")
+            githubRequest.HTTPMethod = "PUT"
+            
+            if let data = data {githubRequest.HTTPBody = NSData(data: data)}
+            
+            let httpResponse = response as! NSHTTPURLResponse
+            if httpResponse.statusCode == 204 {
+                completion()
+            } else {
+                print(error)
+            }
+            
+            
+        }
+        
+        task.resume()
+
+    }
+    
+    
+    func unstarRepository(fullName: String, completion: ()->()) {
+        let urlString = "\(Secrets.githubAPIURL)/user/starred/\(fullName)?access_token=\(Secrets.token)"
+        let url = NSURL(string: urlString)
+        let session = NSURLSession.sharedSession()
+        
+        guard let unwrappedURL = url else { fatalError("Invalid URL") }
+        let githubRequest = NSMutableURLRequest(URL: unwrappedURL)
+        
+        let task = session.dataTaskWithRequest(githubRequest) { (data, response, error) in
+            githubRequest.addValue("token \(Secrets.token)", forHTTPHeaderField: "Authorization")
+            githubRequest.HTTPMethod = "DELETE"
+            
+            if let data = data {githubRequest.HTTPBody = NSData(data: data)}
+            
+            let httpResponse = response as! NSHTTPURLResponse
+            if httpResponse.statusCode == 204 {
+                completion()
+            } else {
+                print(error)
+            }
+            
+        }
+        
+        task.resume()
+    }
+    
     
 }
 
