@@ -28,7 +28,7 @@ class GithubAPIClient {
         task.resume()
     }
     
-    func checkIfRepositoryIsStarred(fullName: String, completion: (Bool) ->()) {
+    class func checkIfRepositoryIsStarred(fullName: String, completion: (Bool) ->()) {
         let urlString = "\(Secrets.githubAPIURL)/user/starred/\(fullName)?access_token=\(Secrets.token)"
         let url = NSURL(string: urlString)
         let session = NSURLSession.sharedSession()
@@ -44,7 +44,7 @@ class GithubAPIClient {
             
             let httpResponse = response as! NSHTTPURLResponse
             if httpResponse.statusCode == 204 {
-                completion()
+                completion(true)
             } else {
                 print(error)
             }
@@ -57,7 +57,7 @@ class GithubAPIClient {
     }
     
     
-    func starRepository(fullName: String, completion:()->()){
+    class func starRepository(fullName: String, completion:()->()){
         let urlString = "\(Secrets.githubAPIURL)/user/starred/\(fullName)?access_token=\(Secrets.token)"
         let url = NSURL(string: urlString)
         let session = NSURLSession.sharedSession()
@@ -86,7 +86,7 @@ class GithubAPIClient {
     }
     
     
-    func unstarRepository(fullName: String, completion: ()->()) {
+    class func unstarRepository(fullName: String, completion: ()->()) {
         let urlString = "\(Secrets.githubAPIURL)/user/starred/\(fullName)?access_token=\(Secrets.token)"
         let url = NSURL(string: urlString)
         let session = NSURLSession.sharedSession()
