@@ -35,28 +35,35 @@ class ReposTableViewController: UITableViewController {
         
         let selectedRepository:GithubRepository = self.store.repositories[indexPath.row]
         
-        let githubStarAlert = UIAlertController.init(title: "Github Star Status", message: "testing", preferredStyle: .Alert)
-        let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
-        githubStarAlert.addAction(defaultAction)
         
         
-        ReposDataStore.toggleStarStatusForRepository(selectedRepository, completion: { (starred) in
+        ReposDataStore.toggleStarStatusForRepository(selectedRepository) { (starred) in
+            print("In the RepoDataStore function")
+            
+            let githubStarAlert = UIAlertController.init(title: "", message: "", preferredStyle: .Alert)
+            let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+            githubStarAlert.addAction(defaultAction)
             
             if starred {
-                githubStarAlert.message = "You just unstarred \(selectedRepository.fullName)"
-                githubStarAlert.accessibilityLabel = githubStarAlert.message
+                githubStarAlert.title = "You just unstarred \(selectedRepository.fullName)"
+                print("alertMessage: \(githubStarAlert.title)")
+                githubStarAlert.accessibilityLabel = "You just unstarred \(selectedRepository.fullName)"
             } else {
-                githubStarAlert.message = "You just starred \(selectedRepository.fullName)"
-                githubStarAlert.accessibilityLabel = githubStarAlert.message
+                githubStarAlert.title = "You just starred \(selectedRepository.fullName)"
+                print("alertMessage: \(githubStarAlert.title)")
+                githubStarAlert.accessibilityLabel = "You just starred \(selectedRepository.fullName)"
             }
             
-            
-        })
-        
-        self.presentViewController(githubStarAlert, animated: true, completion: nil)
-        
-        
+            NSOperationQueue.mainQueue().addOperationWithBlock({
+                self.presentViewController(githubStarAlert, animated: true, completion: {
+                    self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
+                })
+            })
 
+        }
+        
+        
+//        self.presentViewController(githubStarAlert, animated: true, completion: nil)
         
     }
 

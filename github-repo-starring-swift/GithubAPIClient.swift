@@ -37,18 +37,22 @@ class GithubAPIClient {
         let githubRequest = NSMutableURLRequest(URL: unwrappedURL)
         
         let task = session.dataTaskWithRequest(githubRequest) { (data, response, error) in
-            githubRequest.addValue("token \(Secrets.token)", forHTTPHeaderField: "Authorization")
+            //  githubRequest.addValue("token \(Secrets.token)", forHTTPHeaderField: "Authorization")
             githubRequest.HTTPMethod = "GET"
             
-            if let data = data {githubRequest.HTTPBody = NSData(data: data)}
+            //   if let data = data {githubRequest.HTTPBody = NSData(data: data)}
             
             let httpResponse = response as! NSHTTPURLResponse
             if httpResponse.statusCode == 204 {
+                print("Checking...Repo is Starred!")
                 completion(true)
+                
             } else {
-                print(error)
+                print("Checking...Repo is Unstarred!")
+                completion(false)
+                // print(error)
             }
-
+            
             
         }
         
@@ -66,23 +70,19 @@ class GithubAPIClient {
         let githubRequest = NSMutableURLRequest(URL: unwrappedURL)
         
         let task = session.dataTaskWithRequest(githubRequest) { (data, response, error) in
-            githubRequest.addValue("token \(Secrets.token)", forHTTPHeaderField: "Authorization")
+           // githubRequest.addValue("token \(Secrets.token)", forHTTPHeaderField: "Authorization")
             githubRequest.HTTPMethod = "PUT"
             
-            if let data = data {githubRequest.HTTPBody = NSData(data: data)}
+          //  if let data = data {githubRequest.HTTPBody = NSData(data: data)}
             
-            let httpResponse = response as! NSHTTPURLResponse
-            if httpResponse.statusCode == 204 {
+
                 completion()
-            } else {
-                print(error)
-            }
             
             
         }
         
         task.resume()
-
+        
     }
     
     
@@ -92,21 +92,16 @@ class GithubAPIClient {
         let session = NSURLSession.sharedSession()
         
         guard let unwrappedURL = url else { fatalError("Invalid URL") }
-        let githubRequest = NSMutableURLRequest(URL: unwrappedURL)
+       let githubRequest = NSMutableURLRequest(URL: unwrappedURL)
         
         let task = session.dataTaskWithRequest(githubRequest) { (data, response, error) in
-            githubRequest.addValue("token \(Secrets.token)", forHTTPHeaderField: "Authorization")
+          //  githubRequest.addValue("token \(Secrets.token)", forHTTPHeaderField: "Authorization")
             githubRequest.HTTPMethod = "DELETE"
             
-            if let data = data {githubRequest.HTTPBody = NSData(data: data)}
+           // if let data = data {githubRequest.HTTPBody = NSData(data: data)}
             
-            let httpResponse = response as! NSHTTPURLResponse
-            if httpResponse.statusCode == 204 {
                 completion()
-            } else {
-                print(error)
-            }
-            
+
         }
         
         task.resume()
